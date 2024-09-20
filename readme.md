@@ -6,7 +6,7 @@ Jesper Fischer Ehmsen
 # Plate notation of single subject (without Non-decision time)
 
 ``` r
-knitr::include_graphics(here::here("readme","PlateNotation","plate.pdf"))
+knitr::include_graphics(here::here("PlateNotation","plate.pdf"))
 ```
 
 <embed src="PlateNotation/plate.pdf" width="800px" height="800px" type="application/pdf" />
@@ -66,36 +66,6 @@ fit <- mod$sample(
 
     ## Running MCMC with 4 parallel chains...
 
-    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 1 Exception: lognormal_lpdf: Scale parameter is inf, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
-
-    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 1
-
-    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 1 Exception: lognormal_lpdf: Scale parameter is inf, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
-
-    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 1
-
-    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 1 Exception: lognormal_lpdf: Scale parameter is inf, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
-
-    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 1
-
     ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
     ## Chain 2 Exception: lognormal_lpdf: Scale parameter is inf, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
@@ -106,24 +76,14 @@ fit <- mod$sample(
 
     ## Chain 2
 
-    ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 3 Exception: lognormal_lpdf: Scale parameter is 0, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
-
-    ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 3
-
-    ## Chain 1 finished in 0.7 seconds.
+    ## Chain 1 finished in 0.6 seconds.
     ## Chain 2 finished in 0.6 seconds.
-    ## Chain 3 finished in 0.8 seconds.
-    ## Chain 4 finished in 0.7 seconds.
+    ## Chain 3 finished in 0.6 seconds.
+    ## Chain 4 finished in 0.6 seconds.
     ## 
     ## All 4 chains finished successfully.
-    ## Mean chain execution time: 0.7 seconds.
-    ## Total execution time: 1.1 seconds.
+    ## Mean chain execution time: 0.6 seconds.
+    ## Total execution time: 0.9 seconds.
 
 # Check diagnostics:
 
@@ -147,7 +107,7 @@ flextable::flextable(fit$summary(names(parameters)[1:7]) %>%
                               ess_bulk,ess_tail,rhat))
 ```
 
-<img src="readme_files/figure-gfm/unnamed-chunk-6-1.png" width="1474" />
+<img src="readme_files/figure-gfm/unnamed-chunk-6-1.png" width="1491" />
 
 # Plot joint posterior draws over the data:
 
