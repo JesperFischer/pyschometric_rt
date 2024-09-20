@@ -5,11 +5,7 @@ Jesper Fischer Ehmsen
 
 # Plate notation of single subject (without Non-decision time)
 
-``` r
-knitr::include_graphics(here::here("PlateNotation","plate.pdf"))
-```
-
-<embed src="PlateNotation/plate.pdf" width="800px" height="800px" type="application/pdf" />
+![](plate.png)
 
 ## Packages and scripts
 
@@ -41,7 +37,7 @@ plot_joint_rts_single(df)
 
     ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
-![](readme_files/figure-gfm/unnamed-chunk-3-1.png)<!-- --> \### Fitting
+![](readme_files/figure-gfm/unnamed-chunk-2-1.png)<!-- --> \### Fitting
 
 ``` r
 mod = cmdstanr::cmdstan_model(here::here("stanmodels",
@@ -66,9 +62,19 @@ fit <- mod$sample(
 
     ## Running MCMC with 4 parallel chains...
 
+    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 1 Exception: lognormal_lpdf: Scale parameter is inf, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
+
+    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 1
+
     ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 2 Exception: lognormal_lpdf: Scale parameter is inf, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
+    ## Chain 2 Exception: lognormal_lpdf: Scale parameter is 0, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
 
     ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -76,10 +82,20 @@ fit <- mod$sample(
 
     ## Chain 2
 
-    ## Chain 1 finished in 0.6 seconds.
-    ## Chain 2 finished in 0.6 seconds.
+    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 4 Exception: lognormal_lpdf: Scale parameter is inf, but must be positive finite! (in '/tmp/RtmpG4J48Y/model-19262c93b81.stan', line 94, column 2 to column 65)
+
+    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 4
+
     ## Chain 3 finished in 0.6 seconds.
-    ## Chain 4 finished in 0.6 seconds.
+    ## Chain 4 finished in 0.5 seconds.
+    ## Chain 1 finished in 0.8 seconds.
+    ## Chain 2 finished in 0.7 seconds.
     ## 
     ## All 4 chains finished successfully.
     ## Mean chain execution time: 0.6 seconds.
@@ -91,13 +107,13 @@ fit <- mod$sample(
 mcmc_trace(fit$draws(names(parameters)[1:7]))
 ```
 
-![](readme_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 mcmc_pairs(fit$draws(names(parameters)[1:7]), np = nuts_params(fit))
 ```
 
-![](readme_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
 
 ## Table of results
 
@@ -107,7 +123,7 @@ flextable::flextable(fit$summary(names(parameters)[1:7]) %>%
                               ess_bulk,ess_tail,rhat))
 ```
 
-<img src="readme_files/figure-gfm/unnamed-chunk-6-1.png" width="1491" />
+<img src="readme_files/figure-gfm/unnamed-chunk-5-1.png" width="1457" />
 
 # Plot joint posterior draws over the data:
 
@@ -147,4 +163,4 @@ as_draws_df(fit$draws(names(parameters)[1:7])) %>%
     ## Warning: `cols` is now required when using `unnest()`.
     ## ℹ Please use `cols = c(resp)`.
 
-![](readme_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->

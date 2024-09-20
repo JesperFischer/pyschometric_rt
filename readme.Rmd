@@ -6,13 +6,9 @@ output: github_document
 ---
 
 
-# Plate notation of single subject (without Non-decision time)
+### Plate notation of single subject (without Non-decision time)
 
-```{r,out.width = "800px",out.height = "800px"}
-knitr::include_graphics(here::here("PlateNotation","plate.pdf"))
-```
-
-
+![ ](plate.png)
 
 ## Packages and scripts
 ```{r setup, include=FALSE}
