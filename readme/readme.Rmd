@@ -1,0 +1,112 @@
+---
+title: "Psychometric and RT joint modeling"
+author: "Jesper Fischer Ehmsen"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+
+# Plate notation of single subject (without Non-decision time)
+
+```{r,out.width = "800px",out.height = "800px"}
+knitr::include_graphics(here::here("readme","PlateNotation","plate.pdf"))
+```
+
+
+
+## Packages and scripts
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+set.seed(123)
+pacman::p_load(tidyverse,posterior,bayesplot,flextable,shiny,brms,pracma,here,patchwork)
+source(here::here("scripts","Simulate.R"))
+
+```
+
+### Simulate agent with known parameter values:
+
+```{r}
+parameters = data.frame(threshold = 0, slope = 5, lapse = 0.05,
+                        rt_int = 0, rt_beta = 5, rt_sd = 0.3, rt_shift = 0.5,
+                        minRT = 0.2, participant = 1, stimulus = "random")
+
+df = simulate_psychometric(parameters)
+```
+### Plotting
+```{r}
+plot_joint_rts_single(df)
+```
+### Fitting
+
+```{r, warning=FALSE}
+mod = cmdstanr::cmdstan_model(here::here("stanmodels",
+                                         "joint_rt.stan"))
+
+datastan = list(N = nrow(df),
+                resp = df$resp,
+                RT = df$rts,
+                stim = df$x)
+
+fit <- mod$sample(
+  data = datastan,
+  iter_sampling = 500,
+  iter_warmup = 500,
+  chains = 4,
+  parallel_chains = 4,
+  refresh = 0,
+  adapt_delta = 0.8,
+  max_treedepth = 10
+)
+
+```
+
+
+# Check diagnostics:
+```{r, fig.width=7,fig.height=7}
+mcmc_trace(fit$draws(names(parameters)[1:7]))
+
+mcmc_pairs(fit$draws(names(parameters)[1:7]), np = nuts_params(fit))
+```
+
+
+## Table of results
+```{r}
+flextable::flextable(fit$summary(names(parameters)[1:7]) %>% 
+                       select(variable,mean,median,q5,q95,
+                              ess_bulk,ess_tail,rhat))
+```
+
+
+# Plot joint posterior draws over the data:
+
+```{r, fig.width=7,fig.height=5}
+n_draws = 100
+id_draws = sample(1:2000,n_draws)
+
+as_draws_df(fit$draws(names(parameters)[1:7])) %>% 
+  select(-contains(".")) %>% 
+  mutate(draw = 1:n()) %>% filter(draw %in% id_draws) %>% 
+  mutate(minRT = min(df$rts)) %>% 
+  mutate(x = list(seq(-20,20,by = 0.5))) %>% 
+  unnest() %>% rowwise() %>% 
+  mutate(resp = list(generate_expect(x,threshold,slope,lapse,
+                                     rt_int,rt_beta,rt_sd,
+                                     rt_shift,minRT,1))) %>% 
+  select(resp,draw) %>% 
+  unnest() %>% 
+  pivot_longer(cols = c("rts","expectation")) %>% 
+  ggplot(aes(x = x, y = value, group = interaction(draw,name)))+
+  geom_line(alpha = 0.25)+
+  geom_point(data = df %>%  
+               rename("rts" = "rts", "expectation" = "resp") %>% 
+               pivot_longer(cols = c("rts","expectation")) %>% 
+               mutate(draw = NA), aes(x = x, y = value),
+             shape = 21, fill = "orange")+
+  
+  facet_wrap(~name, ncol = 1, scales = "free")+
+  theme_minimal()
+
+
+```
+
+
