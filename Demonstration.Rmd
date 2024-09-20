@@ -10,9 +10,18 @@ runtime: shiny
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 set.seed(123)
+
+if(!require("pacman")){
+  install.packages("pacman")
+}
+
+if(!require("cmdstanr")){
+  install.packages("cmdstanr", repos = c('https://stan-dev.r-universe.dev', getOption("repos")))
+  cmdstanr::install_cmdstan()
+}
+
 pacman::p_load(tidyverse,posterior,bayesplot,flextable,shiny,brms,pracma,here,patchwork)
 source(here::here("scripts","Simulate.R"))
-
 ```
 
 ### Simulate agent with known parameter values:
@@ -43,7 +52,7 @@ fit <- mod$sample(
   iter_warmup = 500,
   chains = 4,
   parallel_chains = 4,
-  refresh = 50,
+  refresh = 0,
   adapt_delta = 0.8,
   max_treedepth = 10
 )
@@ -90,8 +99,9 @@ as_draws_df(fit$draws(names(parameters)[1:7])) %>% select(-contains(".")) %>%
   facet_wrap(~name, ncol = 1, scales = "free")+
   theme_minimal()
 
-
 ```
+
+
 ### Investigating the model with Shiny
 
 ```{r}
@@ -99,7 +109,7 @@ source(here::here("shiny app","server.R"))
 source(here::here("shiny app","ui.R"))
 
 
-shinyApp(ui,server,options = list(height = 1200, width = 1200))
+shinyApp(ui,server,options = list(height = 1000, width = 1000))
 
 
 ```
